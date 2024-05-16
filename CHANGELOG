@@ -1,3 +1,73 @@
+# Changes in version 7.4.0:
+
+### Breaking change
+
+- Kernel configuration options related to bpfilter (namely: CONFIG_BPFILTER and
+CONFIG_BPFILTER_UMH) are no longer checked with bpftool feature probe, following
+bpfilter's removal in recent kernels. (e725e62)
+
+### New features
+
+The information displayed for BPF links (bpftool link list) keeps getting enriched:
+
+- Display uprobe_multi links. (dd0b761)
+- Display cookie for perf event link probes. (25df69b)
+- Display cookie for kprobe_multi links. (4263cc0)
+
+Other features:
+
+- Generate shadow variables for struct_ops maps in program skeletons. Shadow types
+allow skeleton users to easily access the fields of struct_ops maps at runtime.
+An example program using shadow types is also added to the bpftool-gen manual
+page. (fc0ad76, 579d6b0)
+
+- Mark orphaned programs as such when listing programs. Orphaned programs are
+programs removed in IRQ context, on their way to be unloaded from kernel memory,
+but possibly passing through audit hooks. Such programs would only be listed on
+recent kernels. (5b0a3a4)
+
+- Recognize arena map types (a09e203) and global variables (73a2c7e), and support
+the addr_space_cast instruction in the disassembler for translated programs,
+used for working with arena maps (c305ebf).
+
+### Bug fixes
+
+- In the mirror repository, fix the detection of clang-bpf-co-re (for skeletons
+support) for some clang versions. (515739f)
+
+- Displaying PIDs for processes holding references to BPF links when listing
+links with bpftool link list on older kernels broke in v7.3.0, because the
+internal program pid_iter would fail to load. Fix the program to ensure that
+pid_iter loads and PIDs are displayed. (3214350)
+
+- When loading the internal pid_iter program for displaying PIDs of processes
+holding file descriptors to BPF programs, we would suppress the logs from
+libbpf. Display them when running bpftool in debug mode (--debug). (0cb4aaf)
+
+### Other internal changes
+
+- Silence build warning from calloc() appearing with recent versions of GCC
+(supporting -Wcalloc-transposed-args). (c4cc180)
+
+- Use POSIX's version of basename() for more portability. (6e0d7d0)
+
+- Improve bpftool's bootstrap build by skipping compilation for some unnecessary
+object files (3dc1ac6) and passing more relevant values in HOST_CFLAGS and
+HOST_LDFLAGS (c1adf4a). This also results in more accurate results when listing
+features with bpftool version for the boostrap bpftool binary.
+
+### Known bugs
+
+- Command bpftool cgroup tree may be broken when running with kernels under
+v6.1. (#41)
+
+- When loading multiple programs with bpftool prog loadall and passing a
+directory name for pinning them that is not located under an existing bpffs,
+bpftool attempts to mount a new bpffs on the parent of the directory rather than
+on the directory itself, possibly leading to a portion of the file arborescence
+to be unexpectedly hidden by the mount. (#100)
+
+
 # Changes in version 7.3.0:
 
 ### Deprecation

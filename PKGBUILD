@@ -1,6 +1,7 @@
 # Maintainer: Jiri Pospisil <jiri@jpospisil.com>
+
 pkgname=bpftool-bin
-pkgver=7.3.0
+pkgver=7.4.0
 pkgrel=1
 pkgdesc='bpftool is a tool for inspection and simple manipulation of eBPF programs and maps'
 url='https://github.com/libbpf/bpftool'
@@ -11,22 +12,19 @@ arch=('x86_64' 'aarch64')
 makedepends=('python-docutils')
 provides=('bpftool')
 conflicts=('bpftool')
-license=('GPL2')
-changelog=CHANGELOG
-b2sums=('653ecbe71c35b59fbea347771a714158bf914335d419c40bffe69d18b2cbb07a9f0654fb97d49755e543d6a8c0b3a7f0c9123a170f6e492da8d5b3f45b4afc0a')
-b2sums_x86_64=('5a7da1c466974844ae91f1bd25258708bb62169f924a73751f4467fb51f6a46c73ac65d72b54c5ad0f9236c16235f44736daf356da4cdf93ee71dde1bb634792')
-b2sums_aarch64=('1c30c45fe3b12460d9c255520946d55a60741f54c4c4b0147f7a63e460ec542d656651566354387be5c87982f103253bf471b671cba90751cd28f78a23e5ed28')
+license=('GPL-2.0-only')
+changelog='CHANGELOG'
+b2sums=('ae7b6bc6cb742712981ba8972bcecccc63d440b2a77c5a14f91ba5106c013774313d65fd3f42b843ba4027ab17cf9d44d256270f7f8ad11907714f16f3149078')
+b2sums_x86_64=('b4dff22034220336363faa30c7792b104e7bb6ead860510503d2c234f0ec98e099c2fdae2738956990100aa4898e63ce3a420d46aaa0aefb879234d8723a51cb')
+b2sums_aarch64=('302a8d7caaae9d0ea850e455e99f62a9c3c0c7f60d90f2797422fd10b7631ff7588595950c59ecf5761510a3f7b447c072ed8224dde485d54e7f0bec937fb8f4')
 
 package() {
-  # Copy the main binary
   cd "$srcdir"
   install -Dm755 bpftool "$pkgdir/usr/bin/bpftool"
 
-  # Bash completions
   cd "bpftool-$pkgver"
   install -Dm644 bash-completion/bpftool "$pkgdir/usr/share/bash-completion/completions/bpftool"
 
-  # Man pages
   cd "docs"
   make
   install -Dm644 -t "$pkgdir/usr/share/man/man8" *.8
